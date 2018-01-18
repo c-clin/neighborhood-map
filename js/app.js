@@ -5,10 +5,6 @@ var markers = [];
 function ViewModel() {
 	myLocations: ko.observableArray();
 
-
-
-
-
 }
 
 function initMap () {
@@ -21,6 +17,8 @@ function initMap () {
 		zoom: 11,
 		center: losAngeles
 	});
+
+	var bounds = new google.maps.LatLngBounds();
 
 	var infowindow = new google.maps.InfoWindow({
 		content: 'First Info Window'
@@ -47,20 +45,42 @@ function initMap () {
 		}); 
 
 		markers.push(marker);
-
+		// Extend boundaries to the each marker 
+		bounds.extend(marker.position);
 		marker.addListener('click', function() {
 			console.log(this.title + 'marker clicked');
 			// populateInfoWindow(this. largeInfowindow);
 		});
 	}
+	map.fitBounds(bounds);
 }
 
 
-// sizenav button
+// Side Nav button
+function openNav() {
+    document.getElementById("list-sidebar").style.width = "250px";
+    document.getElementById("map").style.marginRight = "250px";
+    $('#list-sidebar').toggleClass('nav-close');
+    $('#list-sidebar').toggleClass('nav-open');
+}
+
+function closeNav() {
+    document.getElementById("list-sidebar").style.width = "0";
+    document.getElementById("map").style.marginRight = "0";
+    $('#list-sidebar').toggleClass('nav-open');
+    $('#list-sidebar').toggleClass('nav-close');
+
+}
+
 $('.menu-btn').click(function() {
-	$('#sidebar').toggleClass('slideout');
-	console.log('menu clicked');
+	if($('#list-sidebar').hasClass('nav-open')) {
+		closeNav();
+	}
+	else if($('#list-sidebar').hasClass('nav-close')) {
+		openNav();
+	}
 })
+
 
 // Location markers
 var myLocations = [

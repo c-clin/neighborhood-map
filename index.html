@@ -10,7 +10,7 @@
 	</head>
 
 	<body>
-		<div class="container-fluid">
+
 			<!-- 		Navbar with header-->		
 			<nav class="navbar navbar-default">
 				<div class="container">
@@ -25,24 +25,19 @@
 				</div>
 			</nav>
 
-
 			<!-- Sidebar with search and list -->
 			<div id="sidebar" aria-expanded="true" class="">
-				<div id="list-sidebar" class="col-sm-3 col-md-3 col-lg-3 sidebar pull-right">
-
+				<div id="list-sidebar" class="pull-right nav-open">
 					<input class="search" placeholder="Search: ex. Urth Cafe">
 					<hr ckass="divider"></hr>
 					<ul class="nav nav-sidebar" data-bind="foreach: myLocations"> 
-						<a href="#"><li data-bind="text: $data.title"></li></a>
+						<a href="#"><li class="location-list" data-bind="text: $data.title"></li></a>
 					</ul>
 				</div>
 			</div>
 		
-
-
 			<!-- Map -->
 			<div id="map"></div>
-		</div>
 
 	<!-- Jquery -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
