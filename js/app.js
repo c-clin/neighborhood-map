@@ -1,17 +1,20 @@
 // declare global variables
 var map;
 var markers = [];
+var clientID;
+var clientSecret;
 
 function ViewModel() {
-	myLocations: ko.observableArray();
-
-
-
-
+	var self = this;
+	var myLocations = ko.observableArray();
 
 }
 
+
 function initMap () {
+
+	var self = this;
+
 	var losAngeles = {
 		lat: 34.052235,
 		lng: -118.243683
@@ -29,6 +32,16 @@ function initMap () {
 	// locations.addListener('click', function() {
 	// 	infowindow.open(map, locations);
 	// });
+
+
+	// Foursquare api
+	clientID = "VQCP4ZVU0Z4O0BJZN2WK0O0WFZ3TTQJIZRPDEDJXKRB3BJJ0"
+	clientSecret = "WHK5K4BWY0MOUAIPV0JSKEJJ5XJG2WPSC20KELWEBCGCVWYO"
+	url: "https://api.foursquare.com/v2/venues/search?ll=" + markers.lat + "," + markers.lng + "&client_id=" + clientID + "&client_secret=" + clientSecret + "&v=20180119"
+	"https://api.foursquare.com/v2/venues/search?ll=" + markers.lat + "," + markers.lng;
+
+	
+
 
 	// Create the markers
 	for (var i = 0; i < myLocations.length; i++) {
@@ -54,67 +67,6 @@ function initMap () {
 		});
 	}
 }
-
-
-
-// Location markers
-var myLocations = [
-	{
-		title: 'Cafe Laurent',
-		lat: 34.011826,
-		lng: -118.400865,
-		type: 'Restaurant'
-	},
-	{
-		title: 'The Butcher, The Baker, The Cappuccino Maker',
-		lat: 34.092133,
-		lng: -118.380580,
-		type: 'Restaurant'
-
-	},
-	{
-		title: 'Ktch DTLA',
-		lat: 34.042670,
-		lng: -118.234905,
-		type: 'Restaurant'
-	},
-	{
-		title: 'Urth Cafe Santa Monica',
-		lat: 34.004401,
-		lng: -118.485788,
-		type: 'Restaurant'
-	},
-	{
-		tite: 'JiST Cafe',
-		lat: 34.050773,
-		lng: -118.240377,
-		type: 'Restaurant'
-	},
-	{
-		title: 'Republique',
-		lat: 34.064158,
-		lng: -118.343679,
-		type: 'Restaurant'
-	},
-	{
-		title: "Eggslut",
-		lat: 34.050655,
-		lng: -118.248795,
-		type: 'Restaurant'
-	},
-	{
-		title: 'La Grande Orange Cafe',
-		lat: 34.141424,
-		lng: -118.148583,
-		type: 'Restaurant'
-	}, 
-	{
-		title: 'The Independence',
-		lat: 34.013850,
-		lng: -118.495400,
-		type: 'Restaurant'
-	}
-]
 
 
 	ko.applyBindings(new ViewModel());
