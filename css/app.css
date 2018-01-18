@@ -5,6 +5,10 @@ body {
 	padding: 0;
 }
 
+.main {
+	overflow-x: hidden
+}
+
 #map {
 	height: 100%;
 }
