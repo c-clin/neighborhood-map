@@ -10,38 +10,39 @@
 	</head>
 
 	<body>
-		<!-- 		Navbar with header-->		
-		<nav class="navbar navbar-default">
-			<div class="container">
-			 	<span class="nav-brand">
-				Where to brunch in LA?
-				</span>
-				<button type="button" class="btn-lg menu-btn navbar-toggle" data-toggle="collapse" data-target="#sidebar" aria-expanded="true">
-					  <span class="icon-bar"></span>
-					  <span class="icon-bar"></span>
-					  <span class="icon-bar"></span>
-				</button>
+		<div class="container-fluid">
+			<!-- 		Navbar with header-->		
+			<nav class="navbar navbar-default">
+				<div class="container">
+				 	<span class="nav-brand">
+					Where to brunch in LA?
+					</span>
+					<button type="button" class="btn-lg menu-btn navbar-toggle" data-target="#sidebar" aria-expanded="true">
+						  <span class="icon-bar"></span>
+						  <span class="icon-bar"></span>
+						  <span class="icon-bar"></span>
+					</button>
+				</div>
+			</nav>
+
+
+			<!-- Sidebar with search and list -->
+			<div id="sidebar" aria-expanded="true" class="">
+				<div id="list-sidebar" class="col-sm-3 col-md-3 col-lg-3 sidebar pull-right">
+
+					<input class="search" placeholder="Search: ex. Urth Cafe">
+					<hr ckass="divider"></hr>
+					<ul class="nav nav-sidebar" data-bind="foreach: myLocations"> 
+						<a href="#"><li data-bind="text: $data.title"></li></a>
+					</ul>
+				</div>
 			</div>
-		</nav>
+		
 
 
-		<!-- Sidebar with search and list -->
-		<div id="sidebar" aria-expanded="true" class="button-collapse">
-			<div id="list-sidebar" class="col-sm-3 col-md-2 sidebar pull-right">
-
-				<input class="search" placeholder="Search: ex. Urth Cafe">
-				<hr ckass="divider"></hr>
-				<ul class="nav nav-sidebar" data-bind="foreach: myLocations"> 
-					<a href="#"><li data-bind="text: $data.title"></li></a>
-				</ul>
-			</div>
+			<!-- Map -->
+			<div id="map"></div>
 		</div>
-	
-
-
-		<!-- Map -->
-		<div id="map"></div>
-
 
 	<!-- Jquery -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>

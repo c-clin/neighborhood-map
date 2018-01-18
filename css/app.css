@@ -26,6 +26,7 @@ body {
 .menu-btn {
 	float: right;
 	margin:auto;
+	cursor: pointer;
 
 }
 
@@ -36,6 +37,12 @@ body {
 }
 
 /*Sidebar*/
+#sidebar {
+	transition-property: width 1s;
+	-webkit-transition-property: width 1s;
+
+}
+
 #list-sidebar {
 	height: 100%;
 	background-color: #33334d;
@@ -48,6 +55,12 @@ body {
 
 .divider {
 	margin: 10px 5px;
+}
+
+.slideout {
+	width: 3000px;
+	transition-property: width 1s;
+	-webkit-transition-property: width 1s;
 }
 
 /*Media Query*/

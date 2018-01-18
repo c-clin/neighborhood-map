@@ -56,6 +56,11 @@ function initMap () {
 }
 
 
+// sizenav button
+$('.menu-btn').click(function() {
+	$('#sidebar').toggleClass('slideout');
+	console.log('menu clicked');
+})
 
 // Location markers
 var myLocations = [
