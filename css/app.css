@@ -8,3 +8,50 @@ body {
 #map {
 	height: 100%;
 }
+
+
+.navbar.navbar-default {
+	height: 25x;
+	margin: auto;
+	padding: 15px 15px;
+	background-color: #33334d;
+	color: white;
+}
+
+.nav-brand {
+	font-size: 30px;
+}
+
+/*hamburger icon style*/
+.menu-btn {
+	float: right;
+	margin:auto;
+
+}
+
+.icon-bar {
+    width: 35px;
+    height: 5px;
+    margin: 6px 0;
+}
+
+/*Sidebar*/
+#list-sidebar {
+	height: 100%;
+	background-color: #33334d;
+}
+
+.search {
+	margin: 10px 10px 5px 10px;
+	padding: 10px 10px 5px 10px;
+}
+
+.divider {
+	margin: 10px 5px;
+}
+
+/*Media Query*/
+@media screen and (min-width: 768px) {
+	.navbar-toggle {
+    	display: block;
+}
