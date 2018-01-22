@@ -10,8 +10,6 @@ function ViewModel() {
 
 	var myLocations = ko.observableArray([]);
 
-
-
 }
 
 // Side Nav Functions
@@ -54,6 +52,7 @@ function initMap () {
         center: losAngeles
     });
  
+
     self.bounds = new google.maps.LatLngBounds();
     
     // Content for the infowindow
@@ -67,7 +66,7 @@ function initMap () {
     //         '<p>' + data.phone + '</p></div>';
 
     // create info window
-    var largeInfowindow = new google.maps.InfoWindow({
+    self.largeInfowindow = new google.maps.InfoWindow({
         content: 'infowindow content'
     });
     
@@ -90,8 +89,9 @@ function initMap () {
     }). fail(function() {
         console.log("There was an error loading the Foursquare API. Please try again later.")
         console.log(results);
-    });
- 
+        })
+    }     
+
     // Create the markers
     for (var i = 0; i < myLocations.length; i++) {
         var lat = myLocations[i].lat;
@@ -121,64 +121,21 @@ function initMap () {
             // populateInfoWindow(this. largeInfowindow);
         });
     }
+
     map.fitBounds(bounds);
+    
+    
+    // Content for the infowindow
+    // var contentString = '<div class="infowindow">' + 
+    //         '<h2>' + data.name + '</h2>' +
+    //         '<p><a href="' + data.url +'">' + data.url + '</a></p>' +
+    //         '<p>' + data.street + '</p>' +
+    //         '<p>' + data.city + '</p>' +
+    //         '<p>' + data.country + '</p>' +
+    //         '<p>Number of checkins:' + checkins + '</p>' +
+    //         '<p>' + data.phone + '</p></div>';
 
-
-
-    }
-
- 
-
-
-    ko.applyBindings(new ViewModel());
+    // create info window
 }
 
-// self.bounds = new google.maps.LatLngBounds();
-// for (var i = 0; i < locations.length; i++) {
-//     marker = new google.maps.Marker({
-//         position: locations[i].location,
-//         title: locations[i].title,
-//         animation: google.maps.Animation.DROP,
-//         id: locations[i].id,
-//         img: locations[i].icon,
-//         visiblity: ko.observable(false),
-//     });
-//     self.addInfoToWindow(marker);
-//     self.markers().push(marker);
-//     marker.addListener('click', toggleMarker);
-//     marker.addListener('click', fillInfoWindow);
-
-
-
-
-
-
-
-
-
-
-
-//  self.addInfoToWindow = function(marker) {
-//         $.ajax({
-//             url: "https://api.foursquare.com/v2/venues/" + marker.id + '?client_id=4KZBB34R2W4APRMIJIJX1DWUO04NP2PNCQJX2EFK5PZLV1CD&client_secret=CPT2SIUZAV5WTUNTVGG0WI3ZAJKO4I0HJ5TV2TE3U3I3KW5R&v=20170208',
-//             dataType: "json",
-//             success: function(data) {
-//                 // stores results to display likes and ratings
-//                 var result = data.response.venue;
-//                 // add likes and ratings to marker
-//                 marker.likes = result.likes.summary  ? result.likes.summary : "No Likes";
-//                 marker.rating = result.hasOwnProperty('rating') ? result.rating : "No Rating";
-//             },
-//             //alert if there is error in recievng json
-//             error: function(xhr, status, thrownError) {
-//                 console.log("Foursquare data is unavailable. Please try again later.");
-//                 marker.likes = "FS Like Data unavailable";
-//                 marker.rating = "FS Rating Data unavailable";
-//             }
-//         });
-//     };
-
-
-
-
-// }
+ko.applyBindings(new ViewModel());
