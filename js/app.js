@@ -6,9 +6,9 @@ var clientSecret;
 
 // View Model
 function ViewModel() {
-	var self = this;
+    var self = this;
 
-	var myLocations = ko.observableArray([]);
+    var myLocations = ko.observableArray([]);
 
 }
 
@@ -32,9 +32,9 @@ function closeNav() {
 $('.menu-btn').click(function() {
     console.log('menu clicked');
     if(document.getElementById("mySidenav").style.width == "250px") {
-    	return closeNav();
+        return closeNav();
     }
- 	return openNav();
+    return openNav();
 })
  
 
@@ -54,9 +54,20 @@ function initMap () {
  
 
     self.bounds = new google.maps.LatLngBounds();
+    
+    // Content for the infowindow
+    // var contentString = '<div class="infowindow">' + 
+    //         '<h2>' + data.name + '</h2>' +
+    //         '<p><a href="' + data.url +'">' + data.url + '</a></p>' +
+    //         '<p>' + data.street + '</p>' +
+    //         '<p>' + data.city + '</p>' +
+    //         '<p>' + data.country + '</p>' +
+    //         '<p>Number of checkins:' + checkins + '</p>' +
+    //         '<p>' + data.phone + '</p></div>';
 
+    // create info window
     self.largeInfowindow = new google.maps.InfoWindow({
-        content: ''
+        content: 'infowindow content'
     });
     
     // Foursquare api
@@ -68,14 +79,14 @@ function initMap () {
     self.infowindowContent = function(marker) {
         var url = "https://api.foursquare.com/v2/venues/search?ll=" + marker.lat + "," + marker.lng + "&client_id=" + clientID + "&client_secret=" + clientSecret + "&v=20180119";
         $.getJSON(url).done(function(data) {
-            var results = data.response.venues[0];
-            title = results.name;
-            phone = results.formattedPhone;
-            street = results.formattedAddress[0];
-            city = results.formattedAddress[1];
-            country = results.formattedAddress[2];
-            checkIns = results.stats.checkinsCount;
-            url = url; 
+        var results = data.response.venues[0];
+        title = results.name;
+        phone = results.formattedPhone;
+        street = results.formattedAddress[0];
+        city = results.formattedAddress[1];
+        country = results.formattedAddress[2];
+        checkIns = results.stats.checkinsCount;
+        url = url; 
     }). fail(function() {
         console.log("There was an error loading the Foursquare API. Please try again later.")
         console.log(results);
@@ -96,31 +107,20 @@ function initMap () {
             },
             title: title,
             animation: google.maps.Animation.DROP,
-            visiblity: ko.observable(true)
+            visiblity: ko.observable(false)
         }); 
         self.infowindowContent(marker);
-        self.markers.push(marker);
+        self.markers().push(marker);
 
+ 
+        markers.push(marker);
         // Extend boundaries to the each marker 
-        self.bounds.extend(marker.position);
+        bounds.extend(marker.position);
         marker.addListener('click', function() {
             largeInfowindow.setContent(contentString);
             largeInfowindow.open(map, this); 
             // populateInfoWindow(this. largeInfowindow);
         });
-    }
-
-    self.populateInfoWindow = function(marker, largeInfowindow) {
-        //check to make sure the info window is not already opened
-        if(largeInfowindow.marker != marker) {
-            largeInfowindow.marker = marker;
-            largeInfowindow.setContent();
-            largeInfowindow.open(map, marker);
-            // make sure the marker property is cleare if the infowindow is closed
-            largeInfowindow.addListener('closeclick', function() {
-                largeInfowindow.setMarker(null);
-            })
-        }
     }
 
     map.fitBounds(bounds);
