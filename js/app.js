@@ -67,7 +67,7 @@ function initMap () {
 
     // create info window
     self.largeInfowindow = new google.maps.InfoWindow({
-        content: 'infowindow content'
+        content: ''
     });
     
     // Foursquare api
@@ -76,7 +76,7 @@ function initMap () {
     
     // Making the api request
     self.infowindowContent = function(marker) {
-        var url = "https://api.foursquare.com/v2/venues/search?ll=" + marker.position.lat + "," + marker.position.lng + "&client_id=" + clientID + "&client_secret=" + clientSecret + "&v=20180119";
+        var url = "https://api.foursquare.com/v2/venues/" + marker.id + "?client_id=" + clientID + "&client_secret=" + clientSecret + "&v=20180119";
         $.getJSON(url).done(function(data) {
             var results = data.response.venues;
             console.log(results);
@@ -90,14 +90,16 @@ function initMap () {
     }). fail(function() {
         console.log("There was an error loading the Foursquare API. Please try again later.")
         })
-
     }     
 
+            // console.log(marker.position.lat);
+            // console.log(marker.position.lng);
     // Create the markers
     for (var i = 0; i < myLocations.length; i++) {
         var lat = myLocations[i].lat;
         var lng = myLocations[i].lng;
         var title = myLocations[i].title;
+        var id = myLocations[i].id;
  
         var marker = new google.maps.Marker({
             map: map,
@@ -106,22 +108,37 @@ function initMap () {
                 lng: lng
             },
             title: title,
+            id: id,
             animation: google.maps.Animation.DROP,
             visiblity: ko.observable(false)
         }); 
         self.infowindowContent(marker);
         self.markers.push(marker);
+        console.log(markers);
 
         // Extend boundaries to the each marker 
         bounds.extend(marker.position);
         marker.addListener('click', function() {
-            largeInfowindow.setContent(contentString);
+            // largeInfowindow.setContent(contentString);
             largeInfowindow.open(map, this); 
             // populateInfoWindow(this. largeInfowindow);
         });
     }
 
     map.fitBounds(bounds);
+
+    self.populateInfoWindow = function(marker, largeInfowindow) {
+        // check to make sure the info window is not already open
+        if(largeInfowindow.marker != marker) {
+            largeInfowindow.marker = marker;
+            largeInfowindow.setContent('');
+            largeInfowindow.open(map, marker);
+            // Make sure the marker property is cleared if the infowindow is closed
+            largeInfoWindow.addListener('closeclick', function() {
+                largeInfowindow.setMarker(null);
+            });
+        }
+    }
     
     
     // Content for the infowindow
@@ -138,3 +155,4 @@ function initMap () {
 }
 
 ko.applyBindings(new ViewModel());
+
