@@ -4,17 +4,14 @@ var markers = [];
 var clientID;
 var clientSecret;
 
-
- 
+// View Model
 function ViewModel() {
 	var self = this;
-	var myLocations = ko.observableArray();
 
-	// Foursquare api
-	clientID = "VQCP4ZVU0Z4O0BJZN2WK0O0WFZ3TTQJIZRPDEDJXKRB3BJJ0"
-	clientSecret = "WHK5K4BWY0MOUAIPV0JSKEJJ5XJG2WPSC20KELWEBCGCVWYO"
-	url: "https://api.foursquare.com/v2/venues/search?ll=" + markers.lat + "," + markers.lng + "&client_id=" + clientID + "&client_secret=" + clientSecret + "&v=20180119"
-	"https://api.foursquare.com/v2/venues/search?ll=" + markers.lat + "," + markers.lng;
+	var myLocations = ko.observableArray([]);
+
+
+
 }
 
 // Side Nav Functions
@@ -35,6 +32,7 @@ function closeNav() {
 }
 // Toggle the menu icon  
 $('.menu-btn').click(function() {
+    console.log('menu clicked');
     if(document.getElementById("mySidenav").style.width == "250px") {
     	return closeNav();
     }
@@ -42,8 +40,10 @@ $('.menu-btn').click(function() {
 })
  
 
- 
+ // Model 
 function initMap () {
+    var self = this;
+
     var losAngeles = {
         lat: 34.052235,
         lng: -118.243683
@@ -54,15 +54,43 @@ function initMap () {
         center: losAngeles
     });
  
-    var bounds = new google.maps.LatLngBounds();
- 
-    var infowindow = new google.maps.InfoWindow({
-        content: 'First Info Window'
+    self.bounds = new google.maps.LatLngBounds();
+    
+    // Content for the infowindow
+    // var contentString = '<div class="infowindow">' + 
+    //         '<h2>' + data.name + '</h2>' +
+    //         '<p><a href="' + data.url +'">' + data.url + '</a></p>' +
+    //         '<p>' + data.street + '</p>' +
+    //         '<p>' + data.city + '</p>' +
+    //         '<p>' + data.country + '</p>' +
+    //         '<p>Number of checkins:' + checkins + '</p>' +
+    //         '<p>' + data.phone + '</p></div>';
+
+    // create info window
+    var largeInfowindow = new google.maps.InfoWindow({
+        content: 'infowindow content'
     });
- 
-    // locations.addListener('click', function() {
-    //  infowindow.open(map, locations);
-    // });
+    
+    // Foursquare api
+    clientID = "VQCP4ZVU0Z4O0BJZN2WK0O0WFZ3TTQJIZRPDEDJXKRB3BJJ0";
+    clientSecret = "WHK5K4BWY0MOUAIPV0JSKEJJ5XJG2WPSC20KELWEBCGCVWYO";
+    var url = "https://api.foursquare.com/v2/venues/search?ll=" + marker.lat + "," + marker.lng + "&client_id=" + clientID + "&client_secret=" + clientSecret + "&v=20180119";
+    
+    // Making the api request
+    self.infowindowContent = function(marker) {
+        $.getJSON(url).done(function(data) {
+        var results = data.response.venues[0];
+        title = results.name;
+        phone = results.formattedPhone;
+        street = results.formattedAddress[0];
+        city = results.formattedAddress[1];
+        country = results.formattedAddress[2];
+        checkIns = results.stats.checkinsCount;
+        url = url; 
+    }). fail(function() {
+        console.log("There was an error loading the Foursquare API. Please try again later.")
+        console.log(results);
+    });
  
     // Create the markers
     for (var i = 0; i < myLocations.length; i++) {
@@ -77,18 +105,80 @@ function initMap () {
                 lng: lng
             },
             title: title,
-            animation: google.maps.Animation.DROP
+            animation: google.maps.Animation.DROP,
+            visiblity: ko.observable(false)
         }); 
+        self.infowindowContent(marker);
+        self.markers().push(marker);
+
  
         markers.push(marker);
         // Extend boundaries to the each marker 
         bounds.extend(marker.position);
         marker.addListener('click', function() {
-            console.log(this.title + 'marker clicked');
+            largeInfowindow.setContent(contentString);
+            largeInfowindow.open(map, this); 
             // populateInfoWindow(this. largeInfowindow);
         });
     }
     map.fitBounds(bounds);
 
+
+
+    }
+
+ 
+
+
     ko.applyBindings(new ViewModel());
 }
+
+// self.bounds = new google.maps.LatLngBounds();
+// for (var i = 0; i < locations.length; i++) {
+//     marker = new google.maps.Marker({
+//         position: locations[i].location,
+//         title: locations[i].title,
+//         animation: google.maps.Animation.DROP,
+//         id: locations[i].id,
+//         img: locations[i].icon,
+//         visiblity: ko.observable(false),
+//     });
+//     self.addInfoToWindow(marker);
+//     self.markers().push(marker);
+//     marker.addListener('click', toggleMarker);
+//     marker.addListener('click', fillInfoWindow);
+
+
+
+
+
+
+
+
+
+
+
+//  self.addInfoToWindow = function(marker) {
+//         $.ajax({
+//             url: "https://api.foursquare.com/v2/venues/" + marker.id + '?client_id=4KZBB34R2W4APRMIJIJX1DWUO04NP2PNCQJX2EFK5PZLV1CD&client_secret=CPT2SIUZAV5WTUNTVGG0WI3ZAJKO4I0HJ5TV2TE3U3I3KW5R&v=20170208',
+//             dataType: "json",
+//             success: function(data) {
+//                 // stores results to display likes and ratings
+//                 var result = data.response.venue;
+//                 // add likes and ratings to marker
+//                 marker.likes = result.likes.summary  ? result.likes.summary : "No Likes";
+//                 marker.rating = result.hasOwnProperty('rating') ? result.rating : "No Rating";
+//             },
+//             //alert if there is error in recievng json
+//             error: function(xhr, status, thrownError) {
+//                 console.log("Foursquare data is unavailable. Please try again later.");
+//                 marker.likes = "FS Like Data unavailable";
+//                 marker.rating = "FS Rating Data unavailable";
+//             }
+//         });
+//     };
+
+
+
+
+// }
