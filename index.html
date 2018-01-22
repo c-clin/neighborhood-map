@@ -11,7 +11,7 @@
 	<body>
         <div id="mySidenav" class="sidenav nav-close">
             <!-- Sidebar with search and list -->
-            <input class="search" placeholder="Search: ex. Urth Cafe">
+            <input class="search" placeholder="Search: ex. Urth Cafe" data-bind="textInput: searchBox, valueUpdate: 'afterkeydown'">
             <hr>
             <ul class="nav nav-sidebar" data-bind="foreach: myLocations"> 
             <a href="#"><li class="location-list" data-bind="text: $data.title"></li></a>

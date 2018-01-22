@@ -6,7 +6,11 @@ var clientSecret;
 
 // View Model
 function ViewModel() {
-    var self = this;
+
+    var self = this;    
+
+    this.searchBox = ko.observable('');
+
 
     var myLocations = ko.observableArray([]);
 
@@ -52,19 +56,8 @@ function initMap () {
         center: losAngeles
     });
  
-
+    // create bounds to the map
     self.bounds = new google.maps.LatLngBounds();
-    
-    // Content for the infowindow
-    // var contentString = '<div class="infowindow">' + 
-    //         '<h2>' + data.name + '</h2>' +
-    //         '<p><a href="' + data.url +'">' + data.url + '</a></p>' +
-    //         '<p>' + data.street + '</p>' +
-    //         '<p>' + data.city + '</p>' +
-    //         '<p>' + data.country + '</p>' +
-    //         '<p>Number of checkins:' + checkins + '</p>' +
-    //         '<p>' + data.phone + '</p></div>';
-
     // create info window
     self.largeInfowindow = new google.maps.InfoWindow({
         content: ''
@@ -78,13 +71,13 @@ function initMap () {
     self.infowindowContent = function(marker) {
         var url = "https://api.foursquare.com/v2/venues/" + marker.id + "?client_id=" + clientID + "&client_secret=" + clientSecret + "&v=20180119";
         $.getJSON(url).done(function(data) {
-            var results = data.response.venues;
+            var results = data.response.venue;
             console.log(results);
             title = results.name;
-            phone = results.formattedPhone;
-            street = results.formattedAddress[0];
-            city = results.formattedAddress[1];
-            country = results.formattedAddress[2];
+            phone = results.contact.formattedPhone;
+            street = results.location.formattedAddress[0];
+            city = results.location.formattedAddress[1];
+            country = results.location.formattedAddress[2];
             checkIns = results.stats.checkinsCount;
             url = url; 
     }). fail(function() {
@@ -92,15 +85,13 @@ function initMap () {
         })
     }     
 
-            // console.log(marker.position.lat);
-            // console.log(marker.position.lng);
     // Create the markers
     for (var i = 0; i < myLocations.length; i++) {
         var lat = myLocations[i].lat;
         var lng = myLocations[i].lng;
         var title = myLocations[i].title;
         var id = myLocations[i].id;
- 
+
         var marker = new google.maps.Marker({
             map: map,
             position: {
@@ -114,44 +105,45 @@ function initMap () {
         }); 
         self.infowindowContent(marker);
         self.markers.push(marker);
-        console.log(markers);
+        marker.addListener('click', markerClickHandler);
+
+
 
         // Extend boundaries to the each marker 
-        bounds.extend(marker.position);
-        marker.addListener('click', function() {
-            // largeInfowindow.setContent(contentString);
-            largeInfowindow.open(map, this); 
-            // populateInfoWindow(this. largeInfowindow);
-        });
+        self.bounds.extend(marker.position);
     }
 
-    map.fitBounds(bounds);
 
     self.populateInfoWindow = function(marker, largeInfowindow) {
         // check to make sure the info window is not already open
-        if(largeInfowindow.marker != marker) {
-            largeInfowindow.marker = marker;
-            largeInfowindow.setContent('');
-            largeInfowindow.open(map, marker);
+        if(self.largeInfowindow.marker != marker) {
+            self.largeInfowindow.marker = marker;
+            var contentString = '<div class="infowindow">' + 
+            '<h4>' + marker.title + '</h4>' +
+            '<p><a href="' + marker.url +'">' + marker.url + '</a></p>' +
+            '<p>' + marker.street + '</p>' +
+            '<p>' + marker.city + '</p>' +
+            '<p>' + marker.country + '</p>' +
+            '<p>Number of checkins:' + marker.checkIns + '</p>' +
+            '<p>' + marker.phone + '</p></div>';
+            self.largeInfowindow.setContent(contentString);
+            self.largeInfowindow.open(map, marker);
             // Make sure the marker property is cleared if the infowindow is closed
-            largeInfoWindow.addListener('closeclick', function() {
-                largeInfowindow.setMarker(null);
+            self.largeInfoWindow.addListener('closeclick', function() {
+                self.largeInfowindow.setMarker(null);
             });
         }
     }
-    
-    
-    // Content for the infowindow
-    // var contentString = '<div class="infowindow">' + 
-    //         '<h2>' + data.name + '</h2>' +
-    //         '<p><a href="' + data.url +'">' + data.url + '</a></p>' +
-    //         '<p>' + data.street + '</p>' +
-    //         '<p>' + data.city + '</p>' +
-    //         '<p>' + data.country + '</p>' +
-    //         '<p>Number of checkins:' + checkins + '</p>' +
-    //         '<p>' + data.phone + '</p></div>';
+    // Adds animation to the marker when clicked
+    function toggleBounce() {
+        marker.setAnimation(google.maps.Animation.BOUNCE);
+    }
+    // Create a click handler for the markers
+    function markerClickHandler() {
+        self.populateInfoWindow(this, largeInfowindow);
+        toggleBounce();
 
-    // create info window
+    }
 }
 
 ko.applyBindings(new ViewModel());
