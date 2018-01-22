@@ -60,7 +60,8 @@ function initMap () {
     self.bounds = new google.maps.LatLngBounds();
     // create info window
     self.largeInfowindow = new google.maps.InfoWindow({
-        content: ''
+        content: '',
+        maxWidth: 280
     });
     
     // Foursquare api
@@ -73,17 +74,34 @@ function initMap () {
         $.getJSON(url).done(function(data) {
             var results = data.response.venue;
             console.log(results);
-            title = results.name;
-            phone = results.contact.formattedPhone;
-            street = results.location.formattedAddress[0];
-            city = results.location.formattedAddress[1];
-            country = results.location.formattedAddress[2];
-            checkIns = results.stats.checkinsCount;
-            url = url; 
+            marker.title = results.name;
+            marker.phone = results.contact.formattedPhone;
+            if (typeof marker.phone === 'undefined') {
+                marker.phone = '';
+            }
+            marker.street = results.location.formattedAddress[0];
+            marker.city = results.location.formattedAddress[1];
+            marker.country = results.location.formattedAddress[2];
+            marker.checkIns = results.stats.checkinsCount;
+            marker.url = url; 
+            console.log(marker.url);
     }). fail(function() {
-        console.log("There was an error loading the Foursquare API. Please try again later.")
+        alert("There was an error loading the Foursquare API. Please try again later.")
         })
     }     
+
+    // Adds animation to the marker when clicked
+    function toggleBounce(marker) {
+        console.log(marker);
+        marker.setAnimation(google.maps.Animation.BOUNCE);
+        setTimeout(function(){marker.setAnimation(null); }, 750);
+    }
+
+    // Create a click handler for the markers
+    function markerClickHandler() {
+        self.populateInfoWindow(this, largeInfowindow);
+        toggleBounce(marker);
+    }
 
     // Create the markers
     for (var i = 0; i < myLocations.length; i++) {
@@ -113,37 +131,28 @@ function initMap () {
         self.bounds.extend(marker.position);
     }
 
-
+    // Infowindow content
     self.populateInfoWindow = function(marker, largeInfowindow) {
         // check to make sure the info window is not already open
         if(self.largeInfowindow.marker != marker) {
             self.largeInfowindow.marker = marker;
             var contentString = '<div class="infowindow">' + 
             '<h4>' + marker.title + '</h4>' +
-            '<p><a href="' + marker.url +'">' + marker.url + '</a></p>' +
+            '<p>' + marker.phone + '</p>' +
+            '<a href="' + marker.url + '">Website</a>' + //why is url not showing
             '<p>' + marker.street + '</p>' +
             '<p>' + marker.city + '</p>' +
             '<p>' + marker.country + '</p>' +
-            '<p>Number of checkins:' + marker.checkIns + '</p>' +
-            '<p>' + marker.phone + '</p></div>';
+            '<p>Number of checkins: ' + marker.checkIns + '</p>';
             self.largeInfowindow.setContent(contentString);
             self.largeInfowindow.open(map, marker);
             // Make sure the marker property is cleared if the infowindow is closed
-            self.largeInfoWindow.addListener('closeclick', function() {
-                self.largeInfowindow.setMarker(null);
-            });
+            // self.largeInfoWindow.addListener('closeclick', function() {
+            //     self.largeInfowindow.setMarker(null);
+            // });
         }
     }
-    // Adds animation to the marker when clicked
-    function toggleBounce() {
-        marker.setAnimation(google.maps.Animation.BOUNCE);
-    }
-    // Create a click handler for the markers
-    function markerClickHandler() {
-        self.populateInfoWindow(this, largeInfowindow);
-        toggleBounce();
 
-    }
 }
 
 ko.applyBindings(new ViewModel());
