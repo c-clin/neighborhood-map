@@ -76,20 +76,21 @@ function initMap () {
     
     // Making the api request
     self.infowindowContent = function(marker) {
-        var url = "https://api.foursquare.com/v2/venues/search?ll=" + marker.lat + "," + marker.lng + "&client_id=" + clientID + "&client_secret=" + clientSecret + "&v=20180119";
+        var url = "https://api.foursquare.com/v2/venues/search?ll=" + marker.position.lat + "," + marker.position.lng + "&client_id=" + clientID + "&client_secret=" + clientSecret + "&v=20180119";
         $.getJSON(url).done(function(data) {
-        var results = data.response.venues[0];
-        title = results.name;
-        phone = results.formattedPhone;
-        street = results.formattedAddress[0];
-        city = results.formattedAddress[1];
-        country = results.formattedAddress[2];
-        checkIns = results.stats.checkinsCount;
-        url = url; 
+            var results = data.response.venues;
+            console.log(results);
+            title = results.name;
+            phone = results.formattedPhone;
+            street = results.formattedAddress[0];
+            city = results.formattedAddress[1];
+            country = results.formattedAddress[2];
+            checkIns = results.stats.checkinsCount;
+            url = url; 
     }). fail(function() {
         console.log("There was an error loading the Foursquare API. Please try again later.")
-        console.log(results);
         })
+
     }     
 
     // Create the markers
