@@ -74,7 +74,6 @@ function initMap () {
     clientID = "VQCP4ZVU0Z4O0BJZN2WK0O0WFZ3TTQJIZRPDEDJXKRB3BJJ0";
     clientSecret = "WHK5K4BWY0MOUAIPV0JSKEJJ5XJG2WPSC20KELWEBCGCVWYO";
     
-    
     // Making the api request
     self.infowindowContent = function(marker) {
         var url = "https://api.foursquare.com/v2/venues/search?ll=" + marker.lat + "," + marker.lng + "&client_id=" + clientID + "&client_secret=" + clientSecret + "&v=20180119";
@@ -110,10 +109,8 @@ function initMap () {
             visiblity: ko.observable(false)
         }); 
         self.infowindowContent(marker);
-        self.markers().push(marker);
+        self.markers.push(marker);
 
- 
-        markers.push(marker);
         // Extend boundaries to the each marker 
         bounds.extend(marker.position);
         marker.addListener('click', function() {
