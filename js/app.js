@@ -10,8 +10,6 @@ function ViewModel() {
 
 	var myLocations = ko.observableArray([]);
 
-
-
 }
 
 // Side Nav Functions
@@ -54,44 +52,36 @@ function initMap () {
         center: losAngeles
     });
  
-    self.bounds = new google.maps.LatLngBounds();
-    
-    // Content for the infowindow
-    // var contentString = '<div class="infowindow">' + 
-    //         '<h2>' + data.name + '</h2>' +
-    //         '<p><a href="' + data.url +'">' + data.url + '</a></p>' +
-    //         '<p>' + data.street + '</p>' +
-    //         '<p>' + data.city + '</p>' +
-    //         '<p>' + data.country + '</p>' +
-    //         '<p>Number of checkins:' + checkins + '</p>' +
-    //         '<p>' + data.phone + '</p></div>';
 
-    // create info window
-    var largeInfowindow = new google.maps.InfoWindow({
-        content: 'infowindow content'
+    self.bounds = new google.maps.LatLngBounds();
+
+    self.largeInfowindow = new google.maps.InfoWindow({
+        content: ''
     });
     
     // Foursquare api
     clientID = "VQCP4ZVU0Z4O0BJZN2WK0O0WFZ3TTQJIZRPDEDJXKRB3BJJ0";
     clientSecret = "WHK5K4BWY0MOUAIPV0JSKEJJ5XJG2WPSC20KELWEBCGCVWYO";
-    var url = "https://api.foursquare.com/v2/venues/search?ll=" + marker.lat + "," + marker.lng + "&client_id=" + clientID + "&client_secret=" + clientSecret + "&v=20180119";
+    
     
     // Making the api request
     self.infowindowContent = function(marker) {
+        var url = "https://api.foursquare.com/v2/venues/search?ll=" + marker.lat + "," + marker.lng + "&client_id=" + clientID + "&client_secret=" + clientSecret + "&v=20180119";
         $.getJSON(url).done(function(data) {
-        var results = data.response.venues[0];
-        title = results.name;
-        phone = results.formattedPhone;
-        street = results.formattedAddress[0];
-        city = results.formattedAddress[1];
-        country = results.formattedAddress[2];
-        checkIns = results.stats.checkinsCount;
-        url = url; 
+            var results = data.response.venues[0];
+            title = results.name;
+            phone = results.formattedPhone;
+            street = results.formattedAddress[0];
+            city = results.formattedAddress[1];
+            country = results.formattedAddress[2];
+            checkIns = results.stats.checkinsCount;
+            url = url; 
     }). fail(function() {
         console.log("There was an error loading the Foursquare API. Please try again later.")
         console.log(results);
-    });
- 
+        })
+    }     
+
     // Create the markers
     for (var i = 0; i < myLocations.length; i++) {
         var lat = myLocations[i].lat;
@@ -106,79 +96,47 @@ function initMap () {
             },
             title: title,
             animation: google.maps.Animation.DROP,
-            visiblity: ko.observable(false)
+            visiblity: ko.observable(true)
         }); 
         self.infowindowContent(marker);
-        self.markers().push(marker);
+        self.markers.push(marker);
 
- 
-        markers.push(marker);
         // Extend boundaries to the each marker 
-        bounds.extend(marker.position);
+        self.bounds.extend(marker.position);
         marker.addListener('click', function() {
             largeInfowindow.setContent(contentString);
             largeInfowindow.open(map, this); 
             // populateInfoWindow(this. largeInfowindow);
         });
     }
-    map.fitBounds(bounds);
 
-
-
+    self.populateInfoWindow = function(marker, largeInfowindow) {
+        //check to make sure the info window is not already opened
+        if(largeInfowindow.marker != marker) {
+            largeInfowindow.marker = marker;
+            largeInfowindow.setContent();
+            largeInfowindow.open(map, marker);
+            // make sure the marker property is cleare if the infowindow is closed
+            largeInfowindow.addListener('closeclick', function() {
+                largeInfowindow.setMarker(null);
+            })
+        }
     }
 
- 
+    map.fitBounds(bounds);
+    
+    
+    // Content for the infowindow
+    // var contentString = '<div class="infowindow">' + 
+    //         '<h2>' + data.name + '</h2>' +
+    //         '<p><a href="' + data.url +'">' + data.url + '</a></p>' +
+    //         '<p>' + data.street + '</p>' +
+    //         '<p>' + data.city + '</p>' +
+    //         '<p>' + data.country + '</p>' +
+    //         '<p>Number of checkins:' + checkins + '</p>' +
+    //         '<p>' + data.phone + '</p></div>';
 
-
-    ko.applyBindings(new ViewModel());
+    // create info window
 }
 
-// self.bounds = new google.maps.LatLngBounds();
-// for (var i = 0; i < locations.length; i++) {
-//     marker = new google.maps.Marker({
-//         position: locations[i].location,
-//         title: locations[i].title,
-//         animation: google.maps.Animation.DROP,
-//         id: locations[i].id,
-//         img: locations[i].icon,
-//         visiblity: ko.observable(false),
-//     });
-//     self.addInfoToWindow(marker);
-//     self.markers().push(marker);
-//     marker.addListener('click', toggleMarker);
-//     marker.addListener('click', fillInfoWindow);
-
-
-
-
-
-
-
-
-
-
-
-//  self.addInfoToWindow = function(marker) {
-//         $.ajax({
-//             url: "https://api.foursquare.com/v2/venues/" + marker.id + '?client_id=4KZBB34R2W4APRMIJIJX1DWUO04NP2PNCQJX2EFK5PZLV1CD&client_secret=CPT2SIUZAV5WTUNTVGG0WI3ZAJKO4I0HJ5TV2TE3U3I3KW5R&v=20170208',
-//             dataType: "json",
-//             success: function(data) {
-//                 // stores results to display likes and ratings
-//                 var result = data.response.venue;
-//                 // add likes and ratings to marker
-//                 marker.likes = result.likes.summary  ? result.likes.summary : "No Likes";
-//                 marker.rating = result.hasOwnProperty('rating') ? result.rating : "No Rating";
-//             },
-//             //alert if there is error in recievng json
-//             error: function(xhr, status, thrownError) {
-//                 console.log("Foursquare data is unavailable. Please try again later.");
-//                 marker.likes = "FS Like Data unavailable";
-//                 marker.rating = "FS Rating Data unavailable";
-//             }
-//         });
-//     };
-
-
-
-
-// }
+ko.applyBindings(new ViewModel());
