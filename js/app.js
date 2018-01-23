@@ -1,31 +1,19 @@
-<<<<<<< HEAD
-||||||| merged common ancestors
-// declare global variables
-var map;
-var markers = [];
-var clientID;
-var clientSecret;
-
-=======
-
->>>>>>> af590fb6d7b1a1fd1c7b75090d34526859250708
-// Side Nav Functions
+// Sidenav toggle functions
 function openNav() {
     document.getElementById("mySidenav").style.width = "250px";
     document.getElementById("main").style.marginRight = "250px";
     $('#mySidenav').toggleClass('nav-close');
         $('#mySidenav').toggleClass('nav-open');
 }
-
+ 
 
 function closeNav() {
     document.getElementById("mySidenav").style.width = "0";
     document.getElementById("main").style.marginRight = "0";
     $('#mySidenav').toggleClass('nav-close');
         $('#mySidenav').toggleClass('nav-open');
-
+ 
 }
-
 // Toggle the menu icon  
 $('.menu-btn').click(function() {
     if(document.getElementById("mySidenav").style.width == "250px") {
@@ -33,44 +21,6 @@ $('.menu-btn').click(function() {
     }
     return openNav();
 })
-<<<<<<< HEAD
-
-// View Model
-function ViewModel() {
-
-    var self = this;    
-
-    self.markers = ko.observableArray([]);
-
-    // Create a blank search box
-    this.searchBox = ko.observable('');
-
-    // Create a blank array for the locations
-    this.locations = ko.observableArray();
-
-||||||| merged common ancestors
- 
-
- // Model 
-function initMap () {
-    var self = this;
-
-    // Center point for the map
-    var losAngeles = {
-        lat: 34.052235,
-        lng: -118.243683
-    };
- 
-    // Create the map
-    map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 11,
-        styles: styles,
-        center: losAngeles
-    });
- 
-    // create bounds to the map
-    self.bounds = new google.maps.LatLngBounds();
-=======
  
 // View Model
 function ViewModel() {
@@ -81,15 +31,16 @@ function ViewModel() {
     // Create a blank search box
     this.searchBox = ko.observable('');
 
-    // Create a blank array for the locations
-    this.locations = ko.observableArray();
-    
+    // Filter the users search query
     self.mrk = function() {
         if (this.searchBox().length === '') {
             this.showAll();
         } else {
             for (var i = 0; i < myLocations.length; i++) {
-                if (myLocations[i].title.indexOf(this.searchBox().toLowerCase()) >= 0) {
+                if (myLocations[i].title.indexOf(this.searchBox().toLowerCase()) > -1) {
+                    console.log(self.markers());
+                    console.log(myLocations[i].title.indexOf(this.searchBox().toLowerCase()));
+                    console.log(this.searchBox());
                     self.markers()[i].setVisible(true);
                     self.markers()[i].visiblity(true);
                 } else {
@@ -100,35 +51,16 @@ function ViewModel() {
         }
     };
 
->>>>>>> af590fb6d7b1a1fd1c7b75090d34526859250708
     // create info window
     self.largeInfowindow = new google.maps.InfoWindow({
         content: '',
         maxWidth: 280
     });
-<<<<<<< HEAD
-
-||||||| merged common ancestors
     
-    // Foursquare api
-    clientID = "VQCP4ZVU0Z4O0BJZN2WK0O0WFZ3TTQJIZRPDEDJXKRB3BJJ0";
-    clientSecret = "WHK5K4BWY0MOUAIPV0JSKEJJ5XJG2WPSC20KELWEBCGCVWYO";
-    
-=======
-    
->>>>>>> af590fb6d7b1a1fd1c7b75090d34526859250708
     // Making the api request
     self.infowindowContent = function(marker) {
-<<<<<<< HEAD
-        var url = "https://api.foursquare.com/v2/venues/" + marker.id + "?client_id=VQCP4ZVU0Z4O0BJZN2WK0O0WFZ3TTQJIZRPDEDJXKRB3BJJ0&client_secret=WHK5K4BWY0MOUAIPV0JSKEJJ5XJG2WPSC20KELWEBCGCVWYO&v=20180119";
-  $.getJSON(url).done(function(data) {
-||||||| merged common ancestors
-        var url = "https://api.foursquare.com/v2/venues/" + marker.id + "?client_id=" + clientID + "&client_secret=" + clientSecret + "&v=20180119";
-        $.getJSON(url).done(function(data) {
-=======
         var url = "https://api.foursquare.com/v2/venues/" + marker.id + "?client_id=VQCP4ZVU0Z4O0BJZN2WK0O0WFZ3TTQJIZRPDEDJXKRB3BJJ0&client_secret=WHK5K4BWY0MOUAIPV0JSKEJJ5XJG2WPSC20KELWEBCGCVWYO&v=20180119";
         $.getJSON(url).done(function(data) {
->>>>>>> af590fb6d7b1a1fd1c7b75090d34526859250708
             var results = data.response.venue;
             console.log(results);
             marker.title = results.name;
@@ -154,21 +86,14 @@ function ViewModel() {
     }
 
     // Create a click handler for the markers
-    function markerClickHandler() {
-        self.populateInfoWindow(this, this.largeInfowindow);
+    self.markerClickHandler = function() {
+        self.populateInfoWindow(this, self.largeInfowindow);
         toggleBounce(this);
     }
-
-<<<<<<< HEAD
+    
     // Create bounds to the map
     self.bounds = new google.maps.LatLngBounds();
 
-||||||| merged common ancestors
-=======
-    
-    // create bounds to the map
-    self.bounds = new google.maps.LatLngBounds();
->>>>>>> af590fb6d7b1a1fd1c7b75090d34526859250708
     // Create the markers
     for (var i = 0; i < myLocations.length; i++) {
         var lat = myLocations[i].lat;
@@ -190,9 +115,9 @@ function ViewModel() {
         }); 
         self.infowindowContent(marker);
         self.markers().push(marker);
-        marker.addListener('click', markerClickHandler);
+        marker.addListener('click', self.markerClickHandler);
 
-        // Extend boundaries to each marker 
+        // Extend boundaries to the each marker 
         self.bounds.extend(marker.position);
     }
 
@@ -211,6 +136,7 @@ function ViewModel() {
             '<p>Number of checkins: ' + marker.checkIns + ' times</p>';
             self.largeInfowindow.setContent(contentString);
             self.largeInfowindow.open(map, marker);
+                console.log(marker.url);
             // Make sure the marker property is cleared if the infowindow is closed
             // self.largeInfoWindow.addListener('closeclick', function() {
             //     self.largeInfowindow.setMarker(null);
@@ -218,87 +144,12 @@ function ViewModel() {
         }
     }
 
-<<<<<<< HEAD
-||||||| merged common ancestors
-}
-
-// View Model
-function ViewModel() {
-
-    var self = this;    
-
-    // Create a blank search box
-    this.searchBox = ko.observable('');
-
-    // Create a blank array for the locations
-    this.locations = ko.observableArray();
-
-    console.log(markers);
-=======
-
-
-   
->>>>>>> af590fb6d7b1a1fd1c7b75090d34526859250708
-    // Push the location list into the new ko variable array
-    // self.markers().forEach(function(item){
-    //     self.locations().push(item.title);
-
-    // });
-    console.log(self.markers()[1].title);
-
-<<<<<<< HEAD
-
-    // Allows the searchbox to only return what the user types that are available
-    this.filteredList = ko.computed(function() {
-        var filter = this.searchBox().toLowerCase();
-        if(!filter) {
-            self.markers().forEach(function(location){
-                // Set all the markers to visible
-                // location.visibility(true);
-            })
-            return self.markers();
-        } else {
-            return ko.utils.arrayFilter(self.locations(), function(location) {
-                // Returns true if user's query matches the locations
-                return location.toLowerCase().indexOf(filter) != -1;    
-            });
-||||||| merged common ancestors
-    console.log(self.locations());
-
-    // Allows the searchbox to only return what the user types that are available
-    this.filteredList = ko.computed(function() {
-        var filter = this.searchBox().toLowerCase();
-        if(!filter) {
-            self.locations().forEach(function(location){
-                // Set all the markers to visible
-                // location.visibility(true);
-            })
-            return self.locations();
-        } else {
-            return ko.utils.arrayFilter(self.locations(), function(location) {
-                // Returns true if user's query matches the locations
-                return location.toLowerCase().indexOf(filter) != -1;    
-            });
-=======
+    // Make sure all the markers are visible
     self.showAll = function() {
         for (var i = 0; i < myLocations.length; i++) {
             self.markers()[i].visiblity(true);
             self.markers()[i].setMap(map);
->>>>>>> af590fb6d7b1a1fd1c7b75090d34526859250708
         }
-<<<<<<< HEAD
-    }, this);
-}
-||||||| merged common ancestors
-    }, this);
-}
-
-
-ko.applyBindings(new ViewModel());
-
-=======
     };
     self.showAll();
 }
-
->>>>>>> af590fb6d7b1a1fd1c7b75090d34526859250708
