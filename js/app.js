@@ -77,6 +77,7 @@ function initMap () {
  
     map = new google.maps.Map(document.getElementById('map'), {
         zoom: 11,
+        styles: styles,
         center: losAngeles
     });
  
@@ -107,7 +108,6 @@ function initMap () {
             marker.country = results.location.formattedAddress[2];
             marker.checkIns = results.stats.checkinsCount;
             marker.url = url; 
-            console.log(marker.url);
     }). fail(function() {
         alert("There was an error loading the Foursquare API. Please try again later.")
         })
@@ -142,13 +142,14 @@ function initMap () {
             title: title,
             id: id,
             animation: google.maps.Animation.DROP,
+            visible: true,
             visiblity: ko.observable(true)
         }); 
         self.infowindowContent(marker);
         self.markers.push(marker);
         marker.addListener('click', markerClickHandler);
 
-
+        console.log(markers);
 
         // Extend boundaries to the each marker 
         self.bounds.extend(marker.position);
