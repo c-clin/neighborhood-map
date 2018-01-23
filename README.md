@@ -1,4 +1,4 @@
-#Neighborhood Map Project
+# Neighborhood Map Project
 
 ### What It Is 
 Ths app showcases a Los Angeles neighborhood with 7 default locations which are a few of my favorite brunch restaurants. 
