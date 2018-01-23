@@ -26,14 +26,15 @@ function ViewModel() {
         var filter = this.searchBox().toLowerCase();
         if(!filter) {
             self.locations().forEach(function(location){
-                // location.visible(true);
+                // Set all the markers to visible
             })
             return self.locations();
         } else {
             return ko.utils.arrayFilter(self.locations(), function(location) {
-                console.log(location.indexOf(filter));
-                // Returns true if user's query matches the locations.title()
-                return location.toLowerCase().indexOf(filter) != -1;
+                // Returns true if user's query matches the locations
+                return location.toLowerCase().indexOf(filter) != -1;    
+                if (marker.title = location) {
+                }
             });
         }
     }, this);
@@ -122,7 +123,7 @@ function initMap () {
     // Create a click handler for the markers
     function markerClickHandler() {
         self.populateInfoWindow(this, largeInfowindow);
-        toggleBounce(marker);
+        toggleBounce(this);
     }
 
     // Create the markers
