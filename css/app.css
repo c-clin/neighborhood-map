@@ -12,7 +12,6 @@ body {
  
 }
  
- 
 #map {
     height: 100vh;
     width: inherit;
@@ -57,13 +56,11 @@ body {
     margin-left: 50px;
 }
  
- 
 /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
 @media screen and (max-height: 450px) {
     .sidenav {padding-top: 15px;}
     .sidenav a {font-size: 18px;}
 }
-  
  
 .navbar.navbar-default {
     margin: 10px;
@@ -91,7 +88,6 @@ body {
 }
  
  
- 
 .search {
     margin: 3px 10px 5px 20px;
     padding: 10px 30px 5px 20px;
@@ -100,7 +96,6 @@ body {
 hr {
 	margin: 20px 30px 10px 20px;
 } 
- 
  
 .nav-close {
     padding-right: 0px;

@@ -37,7 +37,7 @@ function ViewModel() {
             this.showAll();
         } else {
             for (var i = 0; i < myLocations.length; i++) {
-                if (myLocations[i].title.indexOf(this.searchBox().toLowerCase()) > -1) {
+                if (myLocations[i].title.toLowerCase().includes(this.searchBox().toLowerCase())) {
                     console.log(self.markers());
                     console.log(myLocations[i].title.indexOf(this.searchBox().toLowerCase()));
                     console.log(this.searchBox());
@@ -117,6 +117,7 @@ function ViewModel() {
         self.markers().push(marker);
         marker.addListener('click', self.markerClickHandler);
 
+
         // Extend boundaries to the each marker 
         self.bounds.extend(marker.position);
     }
@@ -136,7 +137,6 @@ function ViewModel() {
             '<p>Number of checkins: ' + marker.checkIns + ' times</p>';
             self.largeInfowindow.setContent(contentString);
             self.largeInfowindow.open(map, marker);
-                console.log(marker.url);
             // Make sure the marker property is cleared if the infowindow is closed
             // self.largeInfoWindow.addListener('closeclick', function() {
             //     self.largeInfowindow.setMarker(null);
