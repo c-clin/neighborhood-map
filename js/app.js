@@ -4,42 +4,6 @@ var markers = [];
 var clientID;
 var clientSecret;
 
-
-// View Model
-function ViewModel() {
-
-    var self = this;    
-
-    // Create a blank search box
-    this.searchBox = ko.observable('');
-
-    // Create a blank array for the locations
-    this.locations = ko.observableArray();
-
-    // Push the location list into the new ko variable array
-    myLocations.forEach(function(item){
-        self.locations.push(item.title);
-    });
-
-    // Allows the searchbox to only return what the user types that are available
-    this.filteredList = ko.computed(function() {
-        var filter = this.searchBox().toLowerCase();
-        if(!filter) {
-            self.locations().forEach(function(location){
-                // Set all the markers to visible
-            })
-            return self.locations();
-        } else {
-            return ko.utils.arrayFilter(self.locations(), function(location) {
-                // Returns true if user's query matches the locations
-                return location.toLowerCase().indexOf(filter) != -1;    
-                if (marker.title = location) {
-                }
-            });
-        }
-    }, this);
-}
-
 // Side Nav Functions
 function openNav() {
     document.getElementById("mySidenav").style.width = "250px";
@@ -58,7 +22,6 @@ function closeNav() {
 }
 // Toggle the menu icon  
 $('.menu-btn').click(function() {
-    console.log('menu clicked');
     if(document.getElementById("mySidenav").style.width == "250px") {
         return closeNav();
     }
@@ -70,11 +33,13 @@ $('.menu-btn').click(function() {
 function initMap () {
     var self = this;
 
+    // Center point for the map
     var losAngeles = {
         lat: 34.052235,
         lng: -118.243683
     };
  
+    // Create the map
     map = new google.maps.Map(document.getElementById('map'), {
         zoom: 11,
         styles: styles,
@@ -149,7 +114,7 @@ function initMap () {
         self.markers.push(marker);
         marker.addListener('click', markerClickHandler);
 
-        console.log(markers);
+
 
         // Extend boundaries to the each marker 
         self.bounds.extend(marker.position);
@@ -178,6 +143,45 @@ function initMap () {
     }
 
 }
+
+// View Model
+function ViewModel() {
+
+    var self = this;    
+
+    // Create a blank search box
+    this.searchBox = ko.observable('');
+
+    // Create a blank array for the locations
+    this.locations = ko.observableArray();
+
+    console.log(markers);
+    // Push the location list into the new ko variable array
+    myLocations.forEach(function(item){
+        self.locations().push(item.title);
+
+    });
+
+    console.log(self.locations());
+
+    // Allows the searchbox to only return what the user types that are available
+    this.filteredList = ko.computed(function() {
+        var filter = this.searchBox().toLowerCase();
+        if(!filter) {
+            self.locations().forEach(function(location){
+                // Set all the markers to visible
+                // location.visibility(true);
+            })
+            return self.locations();
+        } else {
+            return ko.utils.arrayFilter(self.locations(), function(location) {
+                // Returns true if user's query matches the locations
+                return location.toLowerCase().indexOf(filter) != -1;    
+            });
+        }
+    }, this);
+}
+
 
 ko.applyBindings(new ViewModel());
 
