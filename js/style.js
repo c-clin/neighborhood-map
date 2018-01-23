@@ -3,7 +3,7 @@ var styles = [
     "featureType": "landscape",
     "elementType": "geometry",
     "stylers": [{
-        "color": "#dbf5df"
+        "color": "#ffffd3"
       }]
   },
   {
@@ -40,7 +40,13 @@ var styles = [
     "stylers": [{
         "color": "#cbe0f2"
       }]
+  },
+  {
+    "featureType": "road.arterial",
+    "elementType": "geometry.fill",
+    "stylers": [{
+        "color": "#d4c4e5"
+      }]
   }
-
 
 ];
