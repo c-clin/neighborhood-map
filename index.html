@@ -13,8 +13,8 @@
             <!-- Sidebar with search and list -->
             <input class="search" placeholder="Search: ex. Urth Cafe" data-bind="textInput: searchBox, valueUpdate: 'afterkeydown'">
             <hr>
-            <ul class="nav nav-sidebar" data-bind="foreach: myLocations"> 
-            <a href="#"><li class="location-list" data-bind="text: $data.title"></li></a>
+            <ul class="nav nav-sidebar" data-bind="foreach: filteredList"> 
+            <a href="#"><li class="location-list" data-bind="text: $data"></li></a>
             </ul>
         </div>
         <div id="main">

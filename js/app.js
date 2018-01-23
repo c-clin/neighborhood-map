@@ -4,16 +4,39 @@ var markers = [];
 var clientID;
 var clientSecret;
 
+
 // View Model
 function ViewModel() {
 
     var self = this;    
 
+    // Create a blank search box
     this.searchBox = ko.observable('');
 
+    // Create a blank array for the locations
+    this.locations = ko.observableArray();
 
-    var myLocations = ko.observableArray([]);
+    // Push the location list into the new ko variable array
+    myLocations.forEach(function(item){
+        self.locations.push(item.title);
+    });
 
+    // Allows the searchbox to only return what the user types that are available
+    this.filteredList = ko.computed(function() {
+        var filter = this.searchBox().toLowerCase();
+        if(!filter) {
+            self.locations().forEach(function(location){
+                // location.visible(true);
+            })
+            return self.locations();
+        } else {
+            return ko.utils.arrayFilter(self.locations(), function(location) {
+                console.log(location.indexOf(filter));
+                // Returns true if user's query matches the locations.title()
+                return location.toLowerCase().indexOf(filter) != -1;
+            });
+        }
+    }, this);
 }
 
 // Side Nav Functions
@@ -73,7 +96,6 @@ function initMap () {
         var url = "https://api.foursquare.com/v2/venues/" + marker.id + "?client_id=" + clientID + "&client_secret=" + clientSecret + "&v=20180119";
         $.getJSON(url).done(function(data) {
             var results = data.response.venue;
-            console.log(results);
             marker.title = results.name;
             marker.phone = results.contact.formattedPhone;
             if (typeof marker.phone === 'undefined') {
@@ -91,8 +113,8 @@ function initMap () {
     }     
 
     // Adds animation to the marker when clicked
-    function toggleBounce(marker) {
-        console.log(marker);
+    function toggleBounce(marker) { //Only works on one marker
+        // console.log(marker);
         marker.setAnimation(google.maps.Animation.BOUNCE);
         setTimeout(function(){marker.setAnimation(null); }, 750);
     }
@@ -119,7 +141,7 @@ function initMap () {
             title: title,
             id: id,
             animation: google.maps.Animation.DROP,
-            visiblity: ko.observable(false)
+            visiblity: ko.observable(true)
         }); 
         self.infowindowContent(marker);
         self.markers.push(marker);
@@ -143,7 +165,7 @@ function initMap () {
             '<p>' + marker.street + '</p>' +
             '<p>' + marker.city + '</p>' +
             '<p>' + marker.country + '</p>' +
-            '<p>Number of checkins: ' + marker.checkIns + '</p>';
+            '<p>Number of checkins: ' + marker.checkIns + ' times</p>';
             self.largeInfowindow.setContent(contentString);
             self.largeInfowindow.open(map, marker);
             // Make sure the marker property is cleared if the infowindow is closed
