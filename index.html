@@ -11,10 +11,15 @@
     <body>
         <div id="mySidenav" class="sidenav nav-close">
             <!-- Sidebar with search and list -->
-            <input class="search" placeholder="Search: ex. Urth Cafe" data-bind="textInput: searchBox, valueUpdate: 'afterkeydown'">
+            <input class="search" placeholder="Search: ex. Urth Cafe" data-bind="value: searchBox ,valueUpdate: 'afterkeydown', event: { keyup: mrk }">
             <hr>
-            <ul class="nav nav-sidebar" data-bind="foreach: filteredList"> 
-            <a href="#"><li class="location-list" data-bind="text: $data, click: $parent.markerClickHandler"></li></a>
+            <ul class="nav nav-sidebar"> 
+             <!-- ko foreach: markers -->
+                <!--ko if: visiblity -->
+
+            <a href="#"><li class="location-list" data-bind="text: title.toUpperCase(), click: $parent.markerClickHandler"></li></a>
+                 <!-- /ko -->
+            <!-- /ko -->
             </ul>
         </div>
         <div id="main">
@@ -32,6 +37,7 @@
             </div>    
 
             <!-- Map -->
+
                 <div id="map"></div>
             </div>    
 
