@@ -1,8 +1,3 @@
-// declare global variables
-var map;
-var markers = [];
-var clientID;
-var clientSecret;
 
 // Side Nav Functions
 function openNav() {
@@ -28,41 +23,46 @@ $('.menu-btn').click(function() {
     return openNav();
 })
  
+// View Model
+function ViewModel() {
 
- // Model 
-function initMap () {
-    var self = this;
+    var self = this;    
+    self.markers = ko.observableArray([]);
 
-    // Center point for the map
-    var losAngeles = {
-        lat: 34.052235,
-        lng: -118.243683
+    // Create a blank search box
+    this.searchBox = ko.observable('');
+
+    // Create a blank array for the locations
+    this.locations = ko.observableArray();
+    
+    self.mrk = function() {
+        if (this.searchBox().length === '') {
+            this.showAll();
+        } else {
+            for (var i = 0; i < myLocations.length; i++) {
+                if (myLocations[i].title.indexOf(this.searchBox().toLowerCase()) >= 0) {
+                    self.markers()[i].setVisible(true);
+                    self.markers()[i].visiblity(true);
+                } else {
+                    self.markers()[i].visiblity(false);
+                    self.markers()[i].setVisible(false);
+                }
+            }
+        }
     };
- 
-    // Create the map
-    map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 11,
-        styles: styles,
-        center: losAngeles
-    });
- 
-    // create bounds to the map
-    self.bounds = new google.maps.LatLngBounds();
+
     // create info window
     self.largeInfowindow = new google.maps.InfoWindow({
         content: '',
         maxWidth: 280
     });
     
-    // Foursquare api
-    clientID = "VQCP4ZVU0Z4O0BJZN2WK0O0WFZ3TTQJIZRPDEDJXKRB3BJJ0";
-    clientSecret = "WHK5K4BWY0MOUAIPV0JSKEJJ5XJG2WPSC20KELWEBCGCVWYO";
-    
     // Making the api request
     self.infowindowContent = function(marker) {
-        var url = "https://api.foursquare.com/v2/venues/" + marker.id + "?client_id=" + clientID + "&client_secret=" + clientSecret + "&v=20180119";
+        var url = "https://api.foursquare.com/v2/venues/" + marker.id + "?client_id=VQCP4ZVU0Z4O0BJZN2WK0O0WFZ3TTQJIZRPDEDJXKRB3BJJ0&client_secret=WHK5K4BWY0MOUAIPV0JSKEJJ5XJG2WPSC20KELWEBCGCVWYO&v=20180119";
         $.getJSON(url).done(function(data) {
             var results = data.response.venue;
+            console.log(results);
             marker.title = results.name;
             marker.phone = results.contact.formattedPhone;
             if (typeof marker.phone === 'undefined') {
@@ -74,7 +74,7 @@ function initMap () {
             marker.checkIns = results.stats.checkinsCount;
             marker.url = url; 
     }). fail(function() {
-        alert("There was an error loading the Foursquare API. Please try again later.")
+        console.log("There was an error loading the Foursquare API. Please try again later.")
         })
     }     
 
@@ -91,6 +91,9 @@ function initMap () {
         toggleBounce(this);
     }
 
+    
+    // create bounds to the map
+    self.bounds = new google.maps.LatLngBounds();
     // Create the markers
     for (var i = 0; i < myLocations.length; i++) {
         var lat = myLocations[i].lat;
@@ -111,7 +114,7 @@ function initMap () {
             visiblity: ko.observable(true)
         }); 
         self.infowindowContent(marker);
-        self.markers.push(marker);
+        self.markers().push(marker);
         marker.addListener('click', markerClickHandler);
 
 
@@ -142,46 +145,21 @@ function initMap () {
         }
     }
 
-}
 
-// View Model
-function ViewModel() {
 
-    var self = this;    
-
-    // Create a blank search box
-    this.searchBox = ko.observable('');
-
-    // Create a blank array for the locations
-    this.locations = ko.observableArray();
-
-    console.log(markers);
+   
     // Push the location list into the new ko variable array
     myLocations.forEach(function(item){
         self.locations().push(item.title);
 
     });
 
-    console.log(self.locations());
-
-    // Allows the searchbox to only return what the user types that are available
-    this.filteredList = ko.computed(function() {
-        var filter = this.searchBox().toLowerCase();
-        if(!filter) {
-            self.locations().forEach(function(location){
-                // Set all the markers to visible
-                // location.visibility(true);
-            })
-            return self.locations();
-        } else {
-            return ko.utils.arrayFilter(self.locations(), function(location) {
-                // Returns true if user's query matches the locations
-                return location.toLowerCase().indexOf(filter) != -1;    
-            });
+    self.showAll = function() {
+        for (var i = 0; i < myLocations.length; i++) {
+            self.markers()[i].visiblity(true);
+            self.markers()[i].setMap(map);
         }
-    }, this);
+    };
+    self.showAll();
 }
-
-
-ko.applyBindings(new ViewModel());
 
