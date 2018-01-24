@@ -26,6 +26,7 @@ $('.menu-btn').click(function() {
 function ViewModel() {
 
     var self = this;    
+    // Create a blank markers array
     self.markers = ko.observableArray([]);
 
     // Create a blank search box
@@ -128,23 +129,19 @@ function ViewModel() {
         if(self.largeInfowindow.marker != marker) {
             self.largeInfowindow.marker = marker;
             var contentString = '<div class="infowindow">' + 
-            '<h4>' + marker.title + '</h4>' +
+            '<h3>' + marker.title + '</h3>' +
             '<p>' + marker.phone + '</p>' +
-            '<a href="' + marker.url + '">Website</a>' + //why is url not showing
+            '<p><a href="' + marker.url + '">Website</a></p>' + 
             '<p>' + marker.street + '</p>' +
             '<p>' + marker.city + '</p>' +
             '<p>' + marker.country + '</p>' +
             '<p>Number of checkins: ' + marker.checkIns + ' times</p>';
             self.largeInfowindow.setContent(contentString);
             self.largeInfowindow.open(map, marker);
-            // Make sure the marker property is cleared if the infowindow is closed
-            // self.largeInfoWindow.addListener('closeclick', function() {
-            //     self.largeInfowindow.setMarker(null);
-            // });
         }
     }
 
-    // Make sure all the markers are visible
+    // Function to make markers visible
     self.showAll = function() {
         for (var i = 0; i < myLocations.length; i++) {
             self.markers()[i].visiblity(true);
