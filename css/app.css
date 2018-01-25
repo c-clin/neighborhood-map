@@ -72,6 +72,7 @@ body {
  
 .nav-brand {
     font-size: 35px;
+    word-wrap: break-word;
 
 }
  

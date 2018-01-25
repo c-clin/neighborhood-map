@@ -21,6 +21,23 @@ $('.menu-btn').click(function() {
     }
     return openNav();
 });
+
+var map;
+function initMap() {
+    map = new google.maps.Map(document.getElementById('map'), {
+        center: {
+            lat: 34.052235,
+            lng: -118.243683,
+        },
+        draggable: true,
+        styles: styles,
+        zoom: 11
+    });
+    ko.applyBindings(new ViewModel());
+    }
+    function errorMap(){
+    window.alert("Oops! Something is wrong with the Google Maps API")
+    };
  
 // View Model
 function ViewModel() {
@@ -65,17 +82,14 @@ function ViewModel() {
             var results = data.response.venue;
             console.log(results);
             marker.title = results.name;
-            marker.phone = results.contact.formattedPhone;
-            if (typeof marker.phone === 'undefined') {
-                marker.phone = '';
-            }
+            marker.phone = results.contact.formattedPhone || '';
             marker.street = results.location.formattedAddress[0];
             marker.city = results.location.formattedAddress[1];
             marker.country = results.location.formattedAddress[2];
             marker.checkIns = results.stats.checkinsCount;
             marker.url = url; 
     }). fail(function() {
-        console.log("There was an error loading the Foursquare API. Please try again later.");
+        alert("There was an error loading the Foursquare API. Please try again later.");
         });
     };     
 
