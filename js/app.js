@@ -20,7 +20,7 @@ $('.menu-btn').click(function() {
         return closeNav();
     }
     return openNav();
-})
+});
  
 // View Model
 function ViewModel() {
@@ -75,9 +75,9 @@ function ViewModel() {
             marker.checkIns = results.stats.checkinsCount;
             marker.url = url; 
     }). fail(function() {
-        console.log("There was an error loading the Foursquare API. Please try again later.")
-        })
-    }     
+        console.log("There was an error loading the Foursquare API. Please try again later.");
+        });
+    };     
 
     // Adds animation to the marker when clicked
     function toggleBounce(marker) { //Only works on one marker
@@ -90,7 +90,7 @@ function ViewModel() {
     self.markerClickHandler = function() {
         self.populateInfoWindow(this, self.largeInfowindow);
         toggleBounce(this);
-    }
+    };
     
     // Create bounds to the map
     self.bounds = new google.maps.LatLngBounds();
@@ -139,7 +139,7 @@ function ViewModel() {
             self.largeInfowindow.setContent(contentString);
             self.largeInfowindow.open(map, marker);
         }
-    }
+    };
 
     // Function to make markers visible
     self.showAll = function() {
