@@ -36,8 +36,8 @@ function initMap() {
     ko.applyBindings(new ViewModel());
     }
     function errorMap(){
-    window.alert("Oops! Something is wrong with the Google Maps API")
-    };
+    window.alert("Oops! Something is wrong with the Google Maps API");
+    }
  
 // View Model
 function ViewModel() {
