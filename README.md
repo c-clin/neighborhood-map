@@ -26,5 +26,5 @@ Download the repository and unzip the file. Open `index.html` to run the web app
 
 ### Demo
 
-Please click the link below to see a demo of the application.
-[Demo] (https://chickencat.github.io/neighborhood-map/)
+* Please click the link below to see a demo of the application.
+* [Demo] (https://chickencat.github.io/neighborhood-map/)
