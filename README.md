@@ -1,7 +1,7 @@
 # Neighborhood Map Project
 
 ### What It Is 
-Ths app showcases a Los Angeles neighborhood with 7 default locations which are a few of my favorite brunch restaurants. 
+Ths app showcases the Los Angeles neighborhood with 7 default locations which are a few of my favorite brunch restaurants. 
 This demonstrates the ability to use the js framework Knockout.js and Google Maps API.
 
 ### Installing
